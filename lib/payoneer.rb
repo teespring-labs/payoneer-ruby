@@ -12,6 +12,7 @@ require 'payoneer/response_status'
 require 'payoneer/api'
 
 # Errors
+require 'payoneer/errors/bad_response_status_error'
 require 'payoneer/errors/unexpected_response_error'
 
 module Payoneer
