@@ -15,27 +15,46 @@ describe Payoneer::ResponseStatus do
     end
   end
 
-  describe '.from_response' do
-    let(:response_hash) {
-      {
-        'Code' => '000',
-        'Description' => 'all good',
-      }
-    }
-    let(:alternate_response_hash) {
-      {
-        'Status' => '000',
-        'Description' => 'all good',
-      }
-    }
+  context 'from response' do
     let(:response_status) { described_class.new('000', 'all good') }
 
-    it 'initializes a new ResponseStatus from a response hash' do
-      expect(described_class.from_response(response_hash)).to eq response_status
+    describe '.from_parsed_response' do
+      let(:response_hash) {
+        {
+          'Code' => '000',
+          'Description' => 'all good',
+        }
+      }
+      let(:alternate_response_hash) {
+        {
+          'Status' => '000',
+          'Description' => 'all good',
+        }
+      }
+
+      it 'initializes a new ResponseStatus from a response hash' do
+        expect(described_class.from_parsed_response(response_hash)).to eq response_status
+      end
+
+      it 'works with a reponse hash with a code key of "Status"' do
+        expect(described_class.from_parsed_response(alternate_response_hash)).to eq response_status
+      end
     end
 
-    it 'works with a reponse hash with a code key of "Status"' do
-      expect(described_class.from_response(alternate_response_hash)).to eq response_status
+    describe '.from_response' do
+      let(:xml_response) {
+        <<-XML
+        <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+        <PerformPayoutPayment>
+          <Description>all good</Description>
+          <Status>000</Status>
+        </PerformPayoutPayment>
+        XML
+      }
+
+      it 'initializes a new ResponseStatus from an xml response string' do
+        expect(described_class.from_response(xml_response)).to eq response_status
+      end
     end
   end
 end
