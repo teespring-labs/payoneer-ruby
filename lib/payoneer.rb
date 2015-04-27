@@ -13,6 +13,7 @@ require 'payoneer/configuration'
 # Resources
 require 'payoneer/response'
 require 'payoneer/system'
+require 'payoneer/payee'
 
 # Errors
 require 'payoneer/errors/unexpected_response_error'
