@@ -30,9 +30,7 @@ module Payoneer
   end
 
   def self.make_api_request_parsed(method_name, params = {})
-    response = Hash.from_xml(make_api_request(method_name, params))
-    inner_content = response.values.first
-    inner_content
+    hash_from_api_response(make_api_request(method_name, params))
   end
 
   def self.make_api_request(method_name, params = {})
@@ -43,6 +41,12 @@ module Payoneer
     fail UnexpectedResponseError.new(res.code, res.body) unless res.code == 200
 
     res.body
+  end
+
+  def self.hash_from_api_response(raw_response)
+    response = Hash.from_xml(raw_response)
+    inner_content = response.values.first
+    inner_content
   end
 
   private
