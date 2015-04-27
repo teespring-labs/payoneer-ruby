@@ -7,6 +7,10 @@ require 'active_support/core_ext'
 # Version
 require 'payoneer/version'
 
+# Resources
+require 'payoneer/response_status'
+require 'payoneer/api'
+
 # Errors
 require 'payoneer/errors/unexpected_response_error'
 
