@@ -10,6 +10,7 @@ require 'payoneer/version'
 # Resources
 require 'payoneer/response_status'
 require 'payoneer/api'
+require 'payoneer/payee'
 
 # Errors
 require 'payoneer/errors/bad_response_status_error'
