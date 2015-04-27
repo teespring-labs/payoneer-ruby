@@ -10,6 +10,10 @@ require 'payoneer/version'
 # Configuration
 require 'payoneer/configuration'
 
+# Resources
+require 'payoneer/response'
+require 'payoneer/system'
+
 # Errors
 require 'payoneer/errors/unexpected_response_error'
 require 'payoneer/errors/configuration_error'
