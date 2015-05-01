@@ -4,6 +4,10 @@ module Payoneer
 
     OK_STATUS_CODE = '000'
 
+    def self.new_ok_response(body)
+      new(OK_STATUS_CODE, body)
+    end
+
     def initialize(code, body)
       @code = code
       @body = body
