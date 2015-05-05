@@ -1,9 +1,3 @@
-# Payoneer::Ruby
-
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/payoneer/ruby`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
-
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -22,11 +16,49 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+# Configuration
+Payoneer.configure do |c|
+  c.environment = 'production'
+  c.partner_id = '<payoneer_account_id>'
+  c.partner_username = '<payoneer_account_username>'
+  c.partner_api_password = '<payoneer_api_password>'
+end
+
+# Check Payoneer API status. See Payoneer documentation for possible error codes
+response = Payoneer::System.status
+response.code
+=> "000"
+response.body
+=> "Echo OK - All systems are up"
+response.ok?
+=> true
+
+# Get Payee Signup URL
+Payoneer::Payee.signup_url('payee_1')
+Payoneer::Payee.signup_url('payee_1', redirect_url: 'http://<redirect_url>.com')
+Payoneer::Payee.signup_url('payee_1', redirect_url: 'http://<redirect_url>.com', redirect_time: 10) #seconds
+
+response = Payoneer::Payee.signup_url('payee_1')
+signup_url = response.body if response.ok?
+
+# Perform Payout for Payee
+response = Payoneer::Payout.create(
+  program_id: '<payoneer_program_id>',
+  payment_id: 'payment_1',
+  payee_id: 'payee_1',
+  amount: 4.20,
+  description: 'payee payout',
+  payment_date: Time.now, #defaults to Time.now
+  currency: 'USD' #defaults to USD
+)
+
+p 'Payout created!' if response.ok?
+```
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `bin/console` for an interactive prompt that will allow you to experiment.
+After checking out the repo, run `bin/console` for an interactive prompt that will allow you to experiment.
 
 To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release` to create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
