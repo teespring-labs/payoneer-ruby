@@ -4,7 +4,6 @@ describe Payoneer::Payout do
   describe '.create' do
     let(:params) {
       {
-        program_id: '1234',
         payee_id: 'payee123',
         payment_id: 'payment1',
         amount: 5,
@@ -24,6 +23,10 @@ describe Payoneer::Payout do
         Currency: 'USD',
       }
     }
+
+    before do
+      allow(Payoneer).to receive(:configuration).and_return(double(program_id: '1234'))
+    end
 
     context 'when a payout is successfully created' do
       let(:success_response) {
@@ -63,6 +66,12 @@ describe Payoneer::Payout do
 
         expect(actual_response).to eq(expected_response)
       end
+    end
+
+    it "returns a configuration error if the program_id is not set" do
+      allow(Payoneer).to receive(:configuration).and_return(double(program_id: nil))
+
+      expect{ described_class.create(params) }.to raise_error(Payoneer::Errors::PayoutConfigurationError)
     end
   end
 end

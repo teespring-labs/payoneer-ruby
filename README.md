@@ -23,6 +23,7 @@ Payoneer.configure do |c|
   c.partner_id = '<payoneer_account_id>'
   c.partner_username = '<payoneer_account_username>'
   c.partner_api_password = '<payoneer_api_password>'
+  c.program_id = '<payoneer_program_id>' # only required if performing payouts with Payoneer::Payout.create
 end
 
 # Check Payoneer API status. See Payoneer documentation for possible error codes
@@ -44,7 +45,6 @@ signup_url = response.body if response.ok?
 
 # Perform Payout for Payee
 response = Payoneer::Payout.create(
-  program_id: '<payoneer_program_id>',
   payment_id: 'payment_1',
   payee_id: 'payee_1',
   amount: 4.20,

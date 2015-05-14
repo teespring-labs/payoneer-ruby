@@ -13,14 +13,20 @@ describe Payoneer::Configuration do
     it 'returns the production url when the environment is production' do
       config.environment = 'production'
 
-      expect(config.api_url).to eq described_class::PRODUCTION_API_URL
+      expect(config.api_url).to eq(described_class::PRODUCTION_API_URL)
     end
 
     it 'returns the development url when the environment is production' do
       config.environment = 'development'
 
-      expect(config.api_url).to eq described_class::DEVELOPMENT_API_URL
+      expect(config.api_url).to eq(described_class::DEVELOPMENT_API_URL)
     end
+  end
+
+  it "accepts a program_id" do
+    config.program_id = 'gibson'
+
+    expect(config.program_id).to eq('gibson')
   end
 
   describe '#validate!' do
@@ -50,7 +56,7 @@ describe Payoneer::Configuration do
       config.partner_username = 'user'
       config.partner_api_password = 'id'
 
-      expect(config.validate!).to eq nil
+      expect(config.validate!).to be_nil
     end
   end
 end

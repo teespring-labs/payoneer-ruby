@@ -5,7 +5,7 @@ module Payoneer
     DEVELOPMENT_API_URL = 'https://api.sandbox.payoneer.com/Payouts/HttpApi/API.aspx?'
     PRODUCTION_API_URL = 'https://api.payoneer.com/Payouts/HttpApi/API.aspx?'
 
-    attr_accessor :environment, :partner_id, :partner_username, :partner_api_password
+    attr_accessor :environment, :partner_id, :partner_username, :partner_api_password, :program_id
 
     def initialize
       @environment = DEVELOPMENT_ENVIRONMENT

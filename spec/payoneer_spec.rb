@@ -57,7 +57,7 @@ describe Payoneer do
 
     context 'when Payoneer is not configured' do
       it 'raises a ConfigurationError' do
-        Payoneer.configuration = nil
+        Payoneer._configuration = nil
 
         expect{ Payoneer.make_api_request('method') }.to raise_error(Payoneer::Errors::ConfigurationError)
       end
