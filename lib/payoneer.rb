@@ -19,22 +19,23 @@ require 'payoneer/payout'
 # Errors
 require 'payoneer/errors/unexpected_response_error'
 require 'payoneer/errors/configuration_error'
+require 'payoneer/errors/payout_configuration_error'
 
 module Payoneer
   class << self
-    attr_accessor :configuration
+    attr_accessor :_configuration
   end
 
   def self.configure
-    yield(_configuration)
+    yield(configuration)
   end
 
   def self.make_api_request(method_name, params = {})
-    _configuration.validate!
+    configuration.validate!
 
     request_params = default_params.merge(mname: method_name).merge(params)
 
-    response = RestClient.post(_configuration.api_url, request_params)
+    response = RestClient.post(configuration.api_url, request_params)
 
     fail Errors::UnexpectedResponseError.new(response.code, response.body) unless response.code == 200
 
@@ -43,17 +44,15 @@ module Payoneer
     inner_content
   end
 
-  private
-
-  def self._configuration
-    self.configuration ||= Configuration.new
+  def self.configuration
+    self._configuration ||= Configuration.new
   end
 
   def self.default_params
     {
-      p1: _configuration.partner_username,
-      p2: _configuration.partner_api_password,
-      p3: _configuration.partner_id,
+      p1: configuration.partner_username,
+      p2: configuration.partner_api_password,
+      p3: configuration.partner_id,
     }
   end
 end
