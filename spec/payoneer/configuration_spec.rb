@@ -6,6 +6,36 @@ describe Payoneer::Configuration do
   describe 'default configuration' do
     it 'defaults to development' do
       expect(config.environment).to eq('development')
+      expect(config.production?).to be(false)
+    end
+  end
+
+  describe '#auto_approve_sandbox_accounts?' do
+    it 'is false if not in development' do
+      config.environment = 'production'
+      config.auto_approve_sandbox_accounts = true
+
+      expect(config.auto_approve_sandbox_accounts?).to be(false)
+    end
+
+    it 'is false if flag is not set and in development' do
+      config.environment = 'development'
+
+      expect(config.auto_approve_sandbox_accounts?).to be(false)
+    end
+
+    it 'is false if flag is false' do
+      config.environment = 'development'
+      config.auto_approve_sandbox_accounts = false
+
+      expect(config.auto_approve_sandbox_accounts?).to be(false)
+    end
+
+    it 'is true if flag is true and in development' do
+      config.environment = 'development'
+      config.auto_approve_sandbox_accounts = true
+
+      expect(config.auto_approve_sandbox_accounts?).to be(true)
     end
   end
 

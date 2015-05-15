@@ -23,6 +23,7 @@ Payoneer.configure do |c|
   c.partner_id = '<payoneer_account_id>'
   c.partner_username = '<payoneer_account_username>'
   c.partner_api_password = '<payoneer_api_password>'
+  c.auto_approve_sandbox_accounts = true # if you want sandbox accounts to be automatically approved after signup
 end
 
 # Check Payoneer API status. See Payoneer documentation for possible error codes

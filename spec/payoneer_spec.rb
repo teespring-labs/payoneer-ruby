@@ -56,12 +56,6 @@ describe Payoneer do
     end
 
     context 'when Payoneer is not configured' do
-      it 'raises a ConfigurationError' do
-        Payoneer.configuration = nil
-
-        expect{ Payoneer.make_api_request('method') }.to raise_error(Payoneer::Errors::ConfigurationError)
-      end
-
       it 'raises a ConfigurationError if not all config values are set' do
         Payoneer.configure do |config|
           config.partner_username = nil
