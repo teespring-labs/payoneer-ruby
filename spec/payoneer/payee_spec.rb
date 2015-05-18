@@ -12,7 +12,7 @@ describe Payoneer::Payee do
         return_xml = true
 
         expect(Payoneer).to receive(:make_api_request).
-          with('GetToken', {p4: payee_id, p6: redirect_url, p8: redirect_time, p10: return_xml}).
+          with('GetToken', {p4: payee_id, p6: redirect_url, p8: redirect_time, p9: false, p10: return_xml}).
           and_return(successful_response)
 
         expected_response = Payoneer::Response.new('000', signup_url)
@@ -23,6 +23,16 @@ describe Payoneer::Payee do
         )
 
         expect(actual_response).to eq(expected_response)
+      end
+
+      it 'passes the "auto_approve_sandbox_accounts" value as "p9" to auto-approve accounts' do
+        allow(Payoneer).to receive(:configuration).and_return(double(auto_approve_sandbox_accounts?: true))
+
+        expect(Payoneer).to receive(:make_api_request).
+          with('GetToken', hash_including(p9: true)).
+          and_return({"Token" => ""})
+
+        described_class.signup_url('payee123')
       end
     end
 

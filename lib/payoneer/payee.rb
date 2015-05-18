@@ -9,7 +9,8 @@ module Payoneer
         p4: payee_id,
         p6: redirect_url,
         p8: redirect_time,
-        p10: true, #returns an xml response
+        p9: Payoneer.configuration.auto_approve_sandbox_accounts?,
+        p10: true, # returns an xml response
       }
 
       response = Payoneer.make_api_request(SIGNUP_URL_API_METHOD_NAME, payoneer_params)
