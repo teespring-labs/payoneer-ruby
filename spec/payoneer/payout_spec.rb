@@ -20,7 +20,7 @@ describe Payoneer::Payout do
         p6: 'payee123',
         p7: '5.00',
         p8: 'a payout',
-        p9: '04/30/2015 03:33:44',
+        p9: Time.parse('2015-4-30 03:33:44').in_time_zone('EST').strftime('%m/%d/%Y %H:%M:%S'),
         Currency: 'USD',
       }
     }
