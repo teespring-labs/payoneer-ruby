@@ -58,4 +58,68 @@ describe Payoneer::Payee do
       end
     end
   end
+  describe '.details' do
+    context 'when Payoneer successfully returns payee details' do
+      it 'returns a success response with a hash of the payee details' do
+        payee_details = {
+          "FirstName" => "John",
+          "LastName" => "Doe",
+          "Email" => "john.doe@example.com",
+          "Address1" => "123 Some Street",
+          "Address2" => nil,
+          "City" => "Some Place",
+          "State" => nil,
+          "Zip" => "H0H 0H0",
+          "Country" => "CA",
+          "Phone" => nil,
+          "Mobile" => "18005551212",
+          "PayeeStatus" => "Active",
+          "PayOutMethod" => "Prepaid Card",
+          "Cards" =>
+            {
+              "Card" => {
+                "CardID" => "5549859462922457",
+                "ActivationStatus" => "Card Issued, Not Activated",
+                "CardShipDate" => "08/31/2015",
+                "CardStatus" => "Active"
+              }
+          },
+          "RegDate" => "8/27/2015 11:41:39 PM"
+        }
+        successful_response = { "Payee" => payee_details }
+        payee_id = 'payee123'
+
+        expect(Payoneer).to receive(:make_api_request).
+          with('GetPayeeDetails', { p4: payee_id }).
+          and_return(successful_response)
+
+        expected_response = Payoneer::Response.new('000', payee_details)
+        actual_response = described_class.details(payee_id)
+
+        expect(actual_response).to eq(expected_response)
+      end
+    end
+
+    context 'when Payoneer returns an error response for an unknown payee' do
+      let(:error_code) { '002' }
+      let(:error_description) { 'Payee does not exist' }
+      let(:error_response) {
+        {
+          "Description" => error_description,
+          "Code" => error_code,
+        }
+      }
+
+      before do
+        allow(Payoneer).to receive(:make_api_request) { error_response }
+      end
+
+      it 'raises a BadResponseStatusError' do
+        error_response = Payoneer::Response.new(error_code, error_description)
+
+        expect(described_class.details('payee-unknown')).to eq(error_response)
+        expect(error_response).to_not be_ok
+      end
+    end
+  end
 end
