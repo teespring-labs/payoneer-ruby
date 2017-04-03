@@ -15,6 +15,7 @@ require 'payoneer/response'
 require 'payoneer/system'
 require 'payoneer/payee'
 require 'payoneer/payout'
+require 'payoneer/payout_status'
 
 # Errors
 require 'payoneer/errors/unexpected_response_error'

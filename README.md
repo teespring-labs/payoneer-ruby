@@ -43,6 +43,12 @@ Payoneer::Payee.signup_url('payee_1', redirect_url: 'http://<redirect_url>.com',
 response = Payoneer::Payee.signup_url('payee_1')
 signup_url = response.body if response.ok?
 
+# Get Payee Details
+
+response = Payoneer::Payee.details('payee_1')
+payee = response.body if response.ok?
+p payee["PayeeStatus"]
+
 # Perform Payout for Payee
 response = Payoneer::Payout.create(
   program_id: '<payoneer_program_id>',
