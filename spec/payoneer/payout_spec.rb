@@ -21,7 +21,7 @@ describe Payoneer::Payout do
         p7: '5.00',
         p8: 'a payout',
         p9: '04/30/2015 03:33:44',
-        Currency: 'USD',
+        Currency: Payoneer::DEFAULT_CURRENCY,
       }
     }
 
