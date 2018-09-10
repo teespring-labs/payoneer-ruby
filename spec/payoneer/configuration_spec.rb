@@ -79,6 +79,7 @@ describe Payoneer::Configuration do
       config.partner_id = 'id'
       config.partner_username = 'user'
       config.partner_api_password = 'id'
+      config.currency = 'USD'
 
       expect(config.validate!).to eq nil
     end

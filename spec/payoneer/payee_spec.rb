@@ -18,6 +18,7 @@ describe Payoneer::Payee do
         expected_response = Payoneer::Response.new('000', signup_url)
         actual_response = described_class.signup_url(
           payee_id,
+          Payoneer::DEFAULT_CURRENCY,
           redirect_url: redirect_url,
           redirect_time: redirect_time,
         )
@@ -26,13 +27,13 @@ describe Payoneer::Payee do
       end
 
       it 'passes the "auto_approve_sandbox_accounts" value as "p9" to auto-approve accounts' do
-        allow(Payoneer).to receive(:configuration).and_return(double(auto_approve_sandbox_accounts?: true))
+        allow(Payoneer).to receive(:configuration_by_currency).and_return(double(auto_approve_sandbox_accounts?: true))
 
         expect(Payoneer).to receive(:make_api_request).
           with('GetToken', hash_including(p9: true)).
           and_return({"Token" => ""})
 
-        described_class.signup_url('payee123')
+        described_class.signup_url('payee123', Payoneer::DEFAULT_CURRENCY)
       end
     end
 
@@ -53,7 +54,7 @@ describe Payoneer::Payee do
       it 'raises a BadResponseStatusError' do
         error_response = Payoneer::Response.new(error_code, error_description)
 
-        expect(described_class.signup_url('payee123')).to eq(error_response)
+        expect(described_class.signup_url('payee123', Payoneer::DEFAULT_CURRENCY)).to eq(error_response)
         expect(error_response).to_not be_ok
       end
     end

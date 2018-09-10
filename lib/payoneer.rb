@@ -21,16 +21,26 @@ require 'payoneer/errors/unexpected_response_error'
 require 'payoneer/errors/configuration_error'
 
 module Payoneer
-  def self.configure
-    yield(configuration)
+  DEFAULT_CURRENCY = 'USD'.freeze
+
+  def self.configure(configs = {}, &block)
+    if configs.present?
+      @configurations = configs
+    elsif block
+      key, value = block.call(Configuration.new)
+      @configurations = {}
+      @configurations[key] = value
+    end
   end
 
   def self.make_api_request(method_name, params = {})
-    configuration.validate!
+    currency = params[:Currency]
+    config = configuration_by_currency(currency)
+    config.validate!
 
-    request_params = default_params.merge(mname: method_name).merge(params)
+    request_params = default_params(config).merge(mname: method_name).merge(params)
 
-    response = RestClient.post(configuration.api_url, request_params)
+    response = RestClient.post(config.api_url, request_params)
 
     fail Errors::UnexpectedResponseError.new(response.code, response.body) unless response.code == 200
 
@@ -39,15 +49,19 @@ module Payoneer
     inner_content
   end
 
-  def self.configuration
-    @configuration ||= Configuration.new
+  def self.configurations
+    @configurations ||= {}
   end
 
-  def self.default_params
+  def self.configuration_by_currency(currency)
+    configurations[currency] || configurations[Payoneer::DEFAULT_CURRENCY] || Configuration.new
+  end
+
+  def self.default_params(config)
     {
-      p1: configuration.partner_username,
-      p2: configuration.partner_api_password,
-      p3: configuration.partner_id,
+      p1: config.partner_username,
+      p2: config.partner_api_password,
+      p3: config.partner_id,
     }
   end
 end

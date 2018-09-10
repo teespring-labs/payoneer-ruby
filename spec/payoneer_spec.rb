@@ -11,6 +11,9 @@ describe Payoneer do
         config.partner_username = 'user'
         config.partner_api_password = 'pass'
         config.partner_id = 1
+        config.currency = Payoneer::DEFAULT_CURRENCY
+
+        [Payoneer::DEFAULT_CURRENCY, config]
       end
     end
 
@@ -20,7 +23,7 @@ describe Payoneer do
       end
 
       it 'raises and UnexpectedResponseError if a response code other than 200 is returned' do
-        expect{ Payoneer.make_api_request('PayoneerMethod') }.to raise_error(Payoneer::Errors::UnexpectedResponseError)
+        expect{ Payoneer.make_api_request('PayoneerMethod', {Currency: Payoneer::DEFAULT_CURRENCY}) }.to raise_error(Payoneer::Errors::UnexpectedResponseError)
       end
     end
 
@@ -70,20 +73,43 @@ describe Payoneer do
     before do
       Payoneer.configure do |config|
         config.partner_username = 'the_user_name'
+        config.currency = Payoneer::DEFAULT_CURRENCY
+
+        [Payoneer::DEFAULT_CURRENCY, config]
       end
     end
 
     it 'yields the Payoneer configuration for a block to instantiate' do
-      expect(Payoneer.configuration.partner_username).to eq 'the_user_name'
+      expect(Payoneer.configuration_by_currency(Payoneer::DEFAULT_CURRENCY).partner_username).to eq 'the_user_name'
     end
 
-    it 'yields the same configuration for multiple calls' do
+    it 'yields the new configuration for multiple calls' do
       Payoneer.configure do |config|
         config.partner_id = 3
+        config.currency = Payoneer::DEFAULT_CURRENCY
+
+        [Payoneer::DEFAULT_CURRENCY, config]
       end
 
-      expect(Payoneer.configuration.partner_username).to eq 'the_user_name'
-      expect(Payoneer.configuration.partner_id).to eq 3
+      expect(Payoneer.configuration_by_currency(Payoneer::DEFAULT_CURRENCY).partner_username).to be_nil
+      expect(Payoneer.configuration_by_currency(Payoneer::DEFAULT_CURRENCY).partner_id).to eq 3
+    end
+  end
+
+  describe 'multi .configure' do
+    before do
+      configs = [Payoneer::DEFAULT_CURRENCY, 'EUR'].each_with_object({}) do |currency, hash|
+        config = Payoneer::Configuration.new
+        config.currency = currency
+        hash[currency] = config
+      end
+
+      Payoneer.configure(configs)
+    end
+
+    it 'returns correct config' do
+      expect(Payoneer.configuration_by_currency(nil).currency).to eq(Payoneer::DEFAULT_CURRENCY)
+      expect(Payoneer.configuration_by_currency('EUR').currency).to eq('EUR')
     end
   end
 end
