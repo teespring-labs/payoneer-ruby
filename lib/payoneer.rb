@@ -61,7 +61,6 @@ module Payoneer
     {
       p1: config.partner_username,
       p2: config.partner_api_password,
-      p3: config.partner_id,
     }
   end
 end

@@ -62,21 +62,18 @@ describe Payoneer::Configuration do
     end
 
     it 'fails if the partner_username is not specified' do
-      config.partner_id = 'id'
       config.partner_api_password = 'pass'
 
       expect{ config.validate! }.to raise_error(Payoneer::Errors::ConfigurationError)
     end
 
     it 'fails if the partner_api_password is not specified' do
-      config.partner_id = 'id'
       config.partner_username = 'user'
 
       expect{ config.validate! }.to raise_error(Payoneer::Errors::ConfigurationError)
     end
 
     it 'validates if all the vars are specified' do
-      config.partner_id = 'id'
       config.partner_username = 'user'
       config.partner_api_password = 'id'
       config.currency = 'USD'

@@ -10,7 +10,6 @@ describe Payoneer do
       Payoneer.configure do |config|
         config.partner_username = 'user'
         config.partner_api_password = 'pass'
-        config.partner_id = 1
         config.currency = Payoneer::DEFAULT_CURRENCY
 
         [Payoneer::DEFAULT_CURRENCY, config]
@@ -85,14 +84,12 @@ describe Payoneer do
 
     it 'yields the new configuration for multiple calls' do
       Payoneer.configure do |config|
-        config.partner_id = 3
         config.currency = Payoneer::DEFAULT_CURRENCY
 
         [Payoneer::DEFAULT_CURRENCY, config]
       end
 
       expect(Payoneer.configuration_by_currency(Payoneer::DEFAULT_CURRENCY).partner_username).to be_nil
-      expect(Payoneer.configuration_by_currency(Payoneer::DEFAULT_CURRENCY).partner_id).to eq 3
     end
   end
 
